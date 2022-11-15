@@ -1,12 +1,22 @@
 {
-  "name": "food-shop-front",
+  "name": "client-app",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@emotion/react": "^11.10.4",
+    "@emotion/styled": "^11.10.4",
+    "@mui/icons-material": "^5.10.9",
+    "@mui/material": "^5.10.11",
+    "@mui/styled-engine-sc": "^5.10.6",
+    "axios": "^1.1.3",
     "cra-template": "1.2.0",
+    "mobx": "^6.6.2",
+    "mobx-react-lite": "^3.4.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-scripts": "5.0.1"
+    "react-router-dom": "^6.4.2",
+    "react-scripts": "5.0.1",
+    "styled-components": "^5.3.6"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -31,5 +41,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "main": "index.js",
+  "repository": "https://github.com/iconenemy/food-shop-frontend.git",
+  "author": "iconenemy <iconenemy@gmail.com>",
+  "license": "MIT"
 }

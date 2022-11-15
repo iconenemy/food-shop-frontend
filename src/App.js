@@ -1,25 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
+import {Routes, Route } from 'react-router-dom';
+import Layout from './components/Layout';
+import Main from './components/Main';
+import Login from './components/authComponents/Login';
+import Register from './components/authComponents/Register';
+import { useContext, useEffect } from 'react';
+import StoreContext from './index';
+import {observer} from 'mobx-react-lite'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+const App = () => {
+  const {store} = useContext(StoreContext)
+
+  useEffect( () => {
+    if (localStorage.getItem('access_token')) {
+      store.checkAuth()
+    }
+  }, [store])
+
+  return ( <>
+    {store.isLoading ? 
+      <div>Loading...</div> 
+      : 
+      <Routes>
+        <Route path='/' element={<Layout />}>
+          <Route index element={<Main />} />
+          <Route path='login' element={<Login />} />
+          <Route path='register' element={<Register />} />
+        </Route>
+      </Routes>
+      }
+  </>
   );
 }
 
-export default App;
+export default observer(App);
