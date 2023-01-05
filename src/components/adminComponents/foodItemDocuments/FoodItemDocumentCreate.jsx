@@ -75,8 +75,10 @@ const FoodItemDocumentCreate = ({model}) => {
     }, [])
   
     useEffect(() => {
+      store.setErrorStatus(null)
+      store.setErrors(null)
       getFoodSectionList()
-    }, [getFoodSectionList])
+    }, [getFoodSectionList, store])
     
     const changeFoodSection = (event) => {
       setFoodSection(event.target.value);
