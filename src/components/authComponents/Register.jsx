@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'; 
+import React, { useContext,useEffect, useState } from 'react'; 
 import { Link, useNavigate } from 'react-router-dom';
 import {observer} from 'mobx-react-lite'
 
@@ -6,8 +6,6 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
@@ -18,11 +16,11 @@ import StoreContext from '../../index';
 
 function Copyright(props) {
   return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props} >
-      {'Copyright © '}
-      <Link color="inherit" to="/" style={{color: "#38757b"}}>
-        I C O N
-      </Link>{' '}
+    <Typography variant="body2" color="#af120a" align="center" {...props} >
+      {'Copyright © '} &nbsp; 
+      <Link color="inherit" to="/" style={{color: "#af120a"}}>
+        I C O N 
+      </Link>{' '} &nbsp; 
       {new Date().getFullYear()}
       {'.'}
     </Typography>
@@ -33,17 +31,15 @@ const Register = () => {
   const {store} = useContext(StoreContext)
   const navigate = useNavigate()
 
-  const intialForm = Object.freeze({
+  const [formData, setFormData] = useState(Object.freeze({
     username: '',
     email: '',
     password: '',
     first_name: '',
     last_name: '',
     phone_number: '',
-    age: 25
-  })
-
-  const [formData, setFormData] = useState(intialForm)
+    age: null
+  }))
 
   const handleChange = (event) => {
       setFormData({
@@ -54,7 +50,6 @@ const Register = () => {
   
   const handleSubmit = async (event) => {
     event.preventDefault();
-    try {
       const response = await store.register(
         formData.username,
         formData.email,
@@ -63,48 +58,51 @@ const Register = () => {
         formData.last_name,
         formData.phone_number,
         formData.age
-        )
+      )
+      if (response?.data?.status === 201) navigate('/login')    
+  }
 
-      if (response.data.status === 201) navigate('/login')
-        
-    } catch (err){
-      console.log(err)
-    }
-  };
+  useEffect (() => {
+    store.setErrorStatus(null)
+    store.setErrors([])
+  }, [store])
 
   return (
-      <Container component="main" maxWidth="xs">
+      <Container component="main" maxWidth="xs" sx={{marginBottom: 3}}>
         <CssBaseline />
         <Box
           sx={{
-            marginTop: 8,
+            
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'teal' }}>
+          <Avatar sx={{ m: 1, bgcolor: '#af120a' }}>
             <LockOutlinedIcon />
           </Avatar>
-          <Typography component="h1" variant="h5" color={"teal"}>
+          <Typography component="h1" variant="h5" color={"#af120a"}>
             Sign up
           </Typography>
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
+                  variant="filled"
+                  sx={{backgroundColor: 'white'}}
                   autoComplete="given-name"
                   name="first_name"
                   required
                   fullWidth
                   id="first_name"
                   label="First Name"
-                  autoFocus
                   onChange={handleChange}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
+                  variant="filled"
+                  sx={{backgroundColor: 'white'}}
                   required
                   fullWidth
                   id="last_name"
@@ -116,6 +114,8 @@ const Register = () => {
               </Grid>
               <Grid item xs={12}>
                 <TextField
+                  variant="filled"
+                  sx={{backgroundColor: 'white'}}
                   required
                   fullWidth
                   id="username"
@@ -127,6 +127,8 @@ const Register = () => {
               </Grid>
               <Grid item xs={12}>
                 <TextField
+                  variant="filled"
+                  sx={{backgroundColor: 'white'}}
                   required
                   fullWidth
                   id="email"
@@ -138,6 +140,8 @@ const Register = () => {
               </Grid>
               <Grid item xs={12}>
                 <TextField
+                  variant="filled"
+                  sx={{backgroundColor: 'white'}}
                   required
                   fullWidth
                   id="password"
@@ -149,8 +153,11 @@ const Register = () => {
                 />
               </Grid>
 
-              <Grid item xs={12}>
+              
+              <Grid item xs={8}>
                 <TextField
+                  variant="filled"
+                  sx={{backgroundColor: 'white'}}
                   required
                   fullWidth
                   id="phone_number"
@@ -161,13 +168,39 @@ const Register = () => {
                 />
               </Grid>
 
-              <Grid item xs={12}>
-                <FormControlLabel
-                  control={<Checkbox value="allowExtraEmails"/>}
-                  label="I want to receive inspiration, marketing promotions and updates via email."    
+              <Grid item xs={4}>
+                <TextField
+                  variant="filled"
+                  sx={{backgroundColor: 'white'}}
+                  required
+                  fullWidth
+                  type="number"
+                  id="age"
+                  label="Age"
+                  name="age"
+                  autoComplete="age"
+                  onChange={handleChange}
                 />
               </Grid>
+
+              <Grid item xs={12}>
+                {store.errorStatus === 409 &&  store.errors.map((item, idx) => 
+                  <Typography key={idx} sx={{color: '#d21976'}} variant="caption" display="block"> 
+                    *&nbsp;{item.message}
+                  </Typography>)
+                }
+              </Grid>
+
+              <Grid item xs={12}>
+                {store.errorStatus === 400 && 
+                  <Typography sx={{ color: '#d21976'}} variant="caption" display="block">
+                    *&nbsp;{store.errors.message}
+                  </Typography>
+                }
+              </Grid>
+
             </Grid>
+
             <Button
               type="submit"
               fullWidth
@@ -177,9 +210,9 @@ const Register = () => {
             >
               Sign Up
             </Button>
-            <Grid container justifyContent="flex-end">
-              <Grid item>
-                <Link to='/login' variant="body2" style={{color: "teal"}}>
+            <Grid container justifyContent="center">
+              <Grid item sx={{marginTop: 1}}>
+                <Link to='/login' variant="body2" style={{color: "#af120a"}}>
                   Already have an account? Sign in
                 </Link>
               </Grid>

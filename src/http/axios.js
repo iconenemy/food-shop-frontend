@@ -9,13 +9,11 @@ const $api = axios.create({
 
 $api.interceptors.request.use(config => {
     config.headers.Authorization = `Bearer ${localStorage.getItem('access_token')}`
-    console.log('access: ', localStorage.getItem('access_token'));
     return config
 })
 
 $api.interceptors.response.use(config => config, async error => {
     const originRequest = error.config
-    console.log(originRequest);
     if (error.response.status === 401 && error.config && !error.config._isRetry){
         originRequest._isRetry = true
         try {

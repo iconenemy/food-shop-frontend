@@ -1,11 +1,19 @@
 import {Routes, Route } from 'react-router-dom';
+import { useContext, useEffect } from 'react';
+import {observer} from 'mobx-react-lite'
+
+import StoreContext from './index';
+
 import Layout from './components/Layout';
 import Main from './components/Main';
 import Login from './components/authComponents/Login';
 import Register from './components/authComponents/Register';
-import { useContext, useEffect } from 'react';
-import StoreContext from './index';
-import {observer} from 'mobx-react-lite'
+import AdminLayout from './components/adminComponents/AdminLayout';
+import AdminMain from './components/adminComponents/AdminMain';
+import AdminDocumentList from './components/adminComponents/AdminDocumentList';
+import AdminDocumentUpdate from './components/adminComponents/AdminDocumentUpdate';
+import AdminDocumentCreate from './components/adminComponents/AdminDocumentCreate';
+import FoodItem from './components/foodComponents/FoodItem';
 
 const App = () => {
   const {store} = useContext(StoreContext)
@@ -19,15 +27,22 @@ const App = () => {
   return ( <>
     {store.isLoading ? 
       <div>Loading...</div> 
-      : 
+      :
       <Routes>
         <Route path='/' element={<Layout />}>
           <Route index element={<Main />} />
+          <Route path=':section' element={<FoodItem />} />
           <Route path='login' element={<Login />} />
           <Route path='register' element={<Register />} />
+          </Route>
+        <Route path='admin' element={<AdminLayout />}>
+            <Route index element={<AdminMain />} />
+            <Route path=':model' element={<AdminDocumentList />} />
+            <Route path=':model/:id' element={<AdminDocumentUpdate />} />
+            <Route path=':model/create' element={<AdminDocumentCreate />} />
         </Route>
       </Routes>
-      }
+    }
   </>
   );
 }
